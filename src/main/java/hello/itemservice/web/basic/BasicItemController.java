@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -40,13 +41,13 @@ public class BasicItemController
         return "/basic/addForm";
     }
 
-//    @PostMapping("/add")
+    //    @PostMapping("/add")
     public String addItem1(@RequestParam String itemName,
-                       @RequestParam int price,
-                       @RequestParam Integer quantity,
-                       Model model)
+                           @RequestParam int price,
+                           @RequestParam Integer quantity,
+                           Model model)
     {
-        Item item = new Item(itemName,price,quantity);
+        Item item = new Item(itemName, price, quantity);
 
         itemRepository.save(item);
 
@@ -55,7 +56,7 @@ public class BasicItemController
         return "/basic/item";
     }
 
-//    @PostMapping("/add")
+    //    @PostMapping("/add")
     public String addItem2(@ModelAttribute("item") Item item, Model model)
     {
         itemRepository.save(item);
@@ -65,18 +66,34 @@ public class BasicItemController
         return "/basic/item";
     }
 
-//    @PostMapping("/add")
+    //    @PostMapping("/add")
     public String addItem3(@ModelAttribute Item item)
     {
         itemRepository.save(item);
         return "/basic/item";
     }
 
-    @PostMapping("/add")
+    //    @PostMapping("/add")
     public String addItem4(Item item)
     {
         itemRepository.save(item);
         return "/basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItem5(Item item)
+    {
+        itemRepository.save(item);
+        return "redirect:/basic/items/" + item.getId();
+    }
+
+    @PostMapping("/add")
+    public String addItem6(Item item, RedirectAttributes redirectAttributes)
+    {
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/basic/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
